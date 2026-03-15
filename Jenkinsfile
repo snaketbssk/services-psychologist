@@ -9,6 +9,7 @@ pipeline {
 			DOCKER_IMAGE = 'propokot/services-psychologist-client'
 			DOCKER_CREDENTIAL = 'docker-hub-credentials'
 			SERVICE_NAME = 'services-psychologist-client'
+            DOCKER_BRANCH = "${env.BRANCH_NAME}"
 		}
     stages {
         stage('Checkout') {
