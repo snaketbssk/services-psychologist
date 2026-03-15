@@ -53,7 +53,7 @@ const CARD_W = 300
 // ─── Query ────────────────────────────────────────────────────────────────────
 
 async function fetchVideosPage(pageNumber: number): Promise<PagedVideosResponse> {
-  return apiClient.get<PagedVideosResponse>(`videos?PageNumber=${pageNumber}&PageSize=${PAGE_SIZE}`)
+  return apiClient.get<PagedVideosResponse>(`/videos?PageNumber=${pageNumber}&PageSize=${PAGE_SIZE}`)
 }
 
 // ─── VideoCardSkeleton ────────────────────────────────────────────────────────

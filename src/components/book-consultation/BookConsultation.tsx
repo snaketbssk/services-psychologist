@@ -72,7 +72,7 @@ const INITIAL_FORM: FormState = {
 
 // POST — submit form using ConsultationPayload shape
 async function submitConsultation(payload: ConsultationPayload): Promise<void> {
-  await apiClient.post('consultation', payload)
+  await apiClient.post('/consultation', payload)
 }
 
 // ─── Styled primitives ────────────────────────────────────────────────────────
