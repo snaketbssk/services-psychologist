@@ -94,13 +94,14 @@ const HomePage = ({ videos, totalCount }: IProps) => {
     </Box>
   )
 }
-
+//
 // ─── SSR ──────────────────────────────────────────────────────────────────────
 
 export const getServerSideProps: GetServerSideProps<IProps> = async (context: GetServerSidePropsContext) => {
   const i18nProps = await serverSideTranslations(context.locale ?? 'en')
 
   try {
+    // new path
     const data = await fetchJson<ApiResponse>('https://snaketbs.com/psychologist/api/launch')
 
     // New shape: { videos: { totalCount, values: [...] } }

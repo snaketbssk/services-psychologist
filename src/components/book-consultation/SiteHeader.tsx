@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -21,7 +21,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import useScrollTrigger from '@mui/material/useScrollTrigger'
 
-// ---- Types ------------------------------------------------------------------
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface NavChild {
   label: string
@@ -40,7 +40,7 @@ interface NavItem {
   whatsNew?: NavChild[]
 }
 
-// ---- Nav data ---------------------------------------------------------------
+// ─── Nav data ─────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItem[] = [
   {
@@ -151,7 +151,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Contact', href: '/contact-us' }
 ]
 
-// ---- Icons ------------------------------------------------------------------
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
 function SearchIcon() {
   return (
@@ -328,7 +328,7 @@ function TelegramIcon() {
   )
 }
 
-// ---- Mega dropdown ----------------------------------------------------------
+// ─── Mega dropdown ────────────────────────────────────────────────────────────
 
 interface MegaDropdownProps {
   item: NavItem
@@ -344,129 +344,34 @@ function MegaDropdown({ item, onClose, isActive, navbarBottom }: MegaDropdownPro
 
   return (
     <Box
+      // The dropdown is positioned fixed — but we also include an invisible
+      // "bridge" that fills the gap between the navbar bottom and the dropdown
+      // top, so the mouse never leaves a hover zone when moving downward.
       sx={{
         position: 'fixed',
         top: navbarBottom,
         left: 0,
         right: 0,
-        width: '100vw',
-        mt: 0,
-        zIndex: 1300,
-        bgcolor: 'background.paper',
-        borderTop: `1px solid ${theme.palette.grey[200]}`,
-        borderBottom: `1px solid ${theme.palette.grey[200]}`,
-        boxShadow: `0 12px 40px ${alpha(theme.palette.text.primary, 0.1)}`
+        zIndex: 1300
       }}
     >
-      <Container maxWidth='lg'>
-        <Box sx={{ display: 'flex', gap: 0, py: 3 }}>
-          {/* Left: service cards grid OR simple list */}
-          <Box sx={{ flex: 1 }}>
-            {item.megaTitle && (
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: 'text.secondary',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                  mb: 2
-                }}
-              >
-                {item.megaTitle}
-              </Typography>
-            )}
+      {/* Invisible bridge — covers any gap between AppBar bottom and dropdown */}
+      <Box sx={{ height: 4, width: '100%' }} />
 
-            {hasDescriptions ? (
-              // Card grid — 2 columns (Services style)
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: 1.25,
-                  pr: hasWhatsNew ? 4 : 0
-                }}
-              >
-                {item.children?.map(child => (
-                  <Box
-                    key={child.label}
-                    component={Link}
-                    href={child.href}
-                    onClick={onClose}
-                    sx={{
-                      display: 'block',
-                      p: '14px 16px',
-                      borderRadius: '10px',
-                      border: `1px solid ${theme.palette.grey[200]}`,
-                      textDecoration: 'none',
-                      transition: 'border-color 0.2s, background 0.2s',
-                      '&:hover': {
-                        borderColor: theme.palette.primary.main,
-                        bgcolor: alpha(theme.palette.primary.main, 0.04)
-                      }
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: 'text.primary',
-                        mb: 0.5,
-                        fontFamily: '"DM Serif Display", serif'
-                      }}
-                    >
-                      {child.label}
-                    </Typography>
-                    <Typography sx={{ fontSize: 12.5, color: 'text.secondary', lineHeight: 1.6 }}>
-                      {child.description}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            ) : (
-              // Simple list — other nav items
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 0.25,
-                  pr: hasWhatsNew ? 4 : 0
-                }}
-              >
-                {item.children?.map(child => (
-                  <Box
-                    key={child.label}
-                    component={Link}
-                    href={child.href}
-                    onClick={onClose}
-                    sx={{
-                      display: 'block',
-                      px: 1.5,
-                      py: 1,
-                      borderRadius: '8px',
-                      fontSize: 14,
-                      color: isActive(child.href) ? 'text.primary' : 'text.secondary',
-                      fontWeight: isActive(child.href) ? 600 : 400,
-                      textDecoration: 'none',
-                      transition: 'background 0.15s, color 0.15s',
-                      '&:hover': {
-                        bgcolor: alpha(theme.palette.primary.main, 0.08),
-                        color: 'text.primary'
-                      }
-                    }}
-                  >
-                    {child.label}
-                  </Box>
-                ))}
-              </Box>
-            )}
-          </Box>
-
-          {/* Right: What's New sidebar */}
-          {hasWhatsNew && (
-            <>
-              <Divider orientation='vertical' flexItem sx={{ borderColor: 'grey.200', mx: 0 }} />
-              <Box sx={{ width: 280, pl: 4, flexShrink: 0 }}>
+      {/* Actual dropdown panel */}
+      <Box
+        sx={{
+          bgcolor: 'background.paper',
+          borderTop: `1px solid ${theme.palette.grey[200]}`,
+          borderBottom: `1px solid ${theme.palette.grey[200]}`,
+          boxShadow: `0 12px 40px ${alpha(theme.palette.text.primary, 0.1)}`
+        }}
+      >
+        <Container maxWidth='lg'>
+          <Box sx={{ display: 'flex', gap: 0, py: 3 }}>
+            {/* Left: card grid or simple list */}
+            <Box sx={{ flex: 1 }}>
+              {item.megaTitle && (
                 <Typography
                   sx={{
                     fontSize: 13,
@@ -477,73 +382,157 @@ function MegaDropdown({ item, onClose, isActive, navbarBottom }: MegaDropdownPro
                     mb: 2
                   }}
                 >
-                  123
+                  {item.megaTitle}
                 </Typography>
+              )}
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {item.whatsNew?.map(post => (
+              {hasDescriptions ? (
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.25, pr: hasWhatsNew ? 4 : 0 }}>
+                  {item.children?.map(child => (
                     <Box
-                      key={post.label}
+                      key={child.label}
                       component={Link}
-                      href={post.href}
+                      href={child.href}
                       onClick={onClose}
                       sx={{
-                        display: 'flex',
-                        gap: 1.5,
+                        display: 'block',
+                        p: '14px 16px',
+                        borderRadius: '10px',
+                        border: `1px solid ${theme.palette.grey[200]}`,
                         textDecoration: 'none',
-                        '&:hover .post-title': { color: 'primary.dark' }
+                        transition: 'border-color 0.2s, background 0.2s',
+                        '&:hover': {
+                          borderColor: theme.palette.primary.main,
+                          bgcolor: alpha(theme.palette.primary.main, 0.04)
+                        }
                       }}
                     >
-                      {/* Thumbnail */}
-                      <Box
+                      <Typography
                         sx={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          flexShrink: 0,
-                          position: 'relative',
-                          bgcolor: 'grey.200'
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: 'text.primary',
+                          mb: 0.5,
+                          fontFamily: '"DM Serif Display", serif'
                         }}
                       >
-                        {post.image && (
-                          <Image src={post.image} alt={post.label} fill sizes='60px' style={{ objectFit: 'cover' }} />
-                        )}
-                      </Box>
-
-                      {/* Text */}
-                      <Box>
-                        {post.date && (
-                          <Typography sx={{ fontSize: 11, color: 'text.secondary', mb: 0.25, letterSpacing: '0.04em' }}>
-                            {post.date.toUpperCase()}
-                          </Typography>
-                        )}
-                        <Typography
-                          className='post-title'
-                          sx={{
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: 'text.primary',
-                            lineHeight: 1.4,
-                            transition: 'color 0.2s'
-                          }}
-                        >
-                          {post.label}
-                        </Typography>
-                      </Box>
+                        {child.label}
+                      </Typography>
+                      <Typography sx={{ fontSize: 12.5, color: 'text.secondary', lineHeight: 1.6 }}>
+                        {child.description}
+                      </Typography>
                     </Box>
                   ))}
                 </Box>
-              </Box>
-            </>
-          )}
-        </Box>
-      </Container>
+              ) : (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25, pr: hasWhatsNew ? 4 : 0 }}>
+                  {item.children?.map(child => (
+                    <Box
+                      key={child.label}
+                      component={Link}
+                      href={child.href}
+                      onClick={onClose}
+                      sx={{
+                        display: 'block',
+                        px: 1.5,
+                        py: 1,
+                        borderRadius: '8px',
+                        fontSize: 14,
+                        color: isActive(child.href) ? 'text.primary' : 'text.secondary',
+                        fontWeight: isActive(child.href) ? 600 : 400,
+                        textDecoration: 'none',
+                        transition: 'background 0.15s, color 0.15s',
+                        '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.08), color: 'text.primary' }
+                      }}
+                    >
+                      {child.label}
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            {/* Right: What's New sidebar */}
+            {hasWhatsNew && (
+              <>
+                <Divider orientation='vertical' flexItem sx={{ borderColor: 'grey.200', mx: 0 }} />
+                <Box sx={{ width: 280, pl: 4, flexShrink: 0 }}>
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: 'text.secondary',
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      mb: 2
+                    }}
+                  >
+                    What's New
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {item.whatsNew?.map(post => (
+                      <Box
+                        key={post.label}
+                        component={Link}
+                        href={post.href}
+                        onClick={onClose}
+                        sx={{
+                          display: 'flex',
+                          gap: 1.5,
+                          textDecoration: 'none',
+                          '&:hover .post-title': { color: 'primary.dark' }
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            flexShrink: 0,
+                            position: 'relative',
+                            bgcolor: 'grey.200'
+                          }}
+                        >
+                          {post.image && (
+                            <Image src={post.image} alt={post.label} fill sizes='60px' style={{ objectFit: 'cover' }} />
+                          )}
+                        </Box>
+                        <Box>
+                          {post.date && (
+                            <Typography
+                              sx={{ fontSize: 11, color: 'text.secondary', mb: 0.25, letterSpacing: '0.04em' }}
+                            >
+                              {post.date.toUpperCase()}
+                            </Typography>
+                          )}
+                          <Typography
+                            className='post-title'
+                            sx={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: 'text.primary',
+                              lineHeight: 1.4,
+                              transition: 'color 0.2s'
+                            }}
+                          >
+                            {post.label}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </>
+            )}
+          </Box>
+        </Container>
+      </Box>
     </Box>
   )
 }
 
-// ---- Props ------------------------------------------------------------------
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SiteHeaderProps {
   cartCount?: number
@@ -556,7 +545,7 @@ interface SiteHeaderProps {
   logoAlt?: string
 }
 
-// ---- Component --------------------------------------------------------------
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SiteHeader({
   cartCount = 2,
@@ -575,13 +564,12 @@ export default function SiteHeader({
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const appBarRef = useRef<HTMLDivElement>(null)
   const [navbarBottom, setNavbarBottom] = useState(72)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Keep navbarBottom in sync with scroll position
   useEffect(() => {
     const update = () => {
       if (appBarRef.current) {
-        const rect = appBarRef.current.getBoundingClientRect()
-        setNavbarBottom(rect.bottom)
+        setNavbarBottom(appBarRef.current.getBoundingClientRect().bottom)
       }
     }
     update()
@@ -597,9 +585,27 @@ export default function SiteHeader({
 
   const isActive = (href: string): boolean => (href === '/' ? pathname === '/' : pathname?.startsWith(href) ?? false)
 
+  // Delayed close — gives the cursor time to travel from nav item into dropdown
+  const handleMouseEnter = useCallback((label: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setOpenDropdown(label)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 80)
+  }, [])
+
+  const handleDropdownMouseEnter = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+  }, [])
+
+  const handleDropdownMouseLeave = useCallback(() => {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 80)
+  }, [])
+
   return (
     <>
-      {/* Top bar — static, scrolls away */}
+      {/* ── Top bar ── */}
       <Box
         sx={{
           display: { xs: 'none', md: 'block' },
@@ -653,7 +659,7 @@ export default function SiteHeader({
         </Container>
       </Box>
 
-      {/* Sticky main navbar */}
+      {/* ── Sticky AppBar ── */}
       <AppBar
         ref={appBarRef}
         position='sticky'
@@ -665,7 +671,6 @@ export default function SiteHeader({
           borderBottom: `1px solid ${theme.palette.grey[300]}`,
           boxShadow: scrolled ? `0 2px 16px ${alpha(theme.palette.text.primary, 0.07)}` : 'none',
           transition: 'box-shadow 0.3s ease',
-          // Allow mega dropdown to overflow outside the AppBar
           overflow: 'visible'
         }}
       >
@@ -706,8 +711,8 @@ export default function SiteHeader({
                 <Box
                   key={item.label}
                   sx={{ position: 'static' }}
-                  onMouseEnter={() => item.children && setOpenDropdown(item.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+                  onMouseEnter={() => item.children && handleMouseEnter(item.label)}
+                  onMouseLeave={item.children ? handleMouseLeave : undefined}
                 >
                   <Box
                     component={Link}
@@ -725,28 +730,27 @@ export default function SiteHeader({
                       textDecoration: 'none',
                       transition: 'color 0.2s, background 0.2s',
                       whiteSpace: 'nowrap',
-                      // underline on active
                       borderBottom: isActive(item.href)
                         ? `2px solid ${theme.palette.text.primary}`
                         : '2px solid transparent',
-                      '&:hover': {
-                        color: 'text.primary',
-                        bgcolor: alpha(theme.palette.primary.main, 0.06)
-                      }
+                      '&:hover': { color: 'text.primary', bgcolor: alpha(theme.palette.primary.main, 0.06) }
                     }}
                   >
                     {item.label}
                     {item.children && <ChevronDownIcon />}
                   </Box>
 
-                  {/* Mega dropdown rendered via portal-like fixed positioning */}
                   {item.children && openDropdown === item.label && (
-                    <MegaDropdown
-                      item={item}
-                      onClose={() => setOpenDropdown(null)}
-                      isActive={isActive}
-                      navbarBottom={navbarBottom}
-                    />
+                    // Wrap dropdown in its own hover zone so mouse entering
+                    // the dropdown cancels the delayed close timer
+                    <Box onMouseEnter={handleDropdownMouseEnter} onMouseLeave={handleDropdownMouseLeave}>
+                      <MegaDropdown
+                        item={item}
+                        onClose={() => setOpenDropdown(null)}
+                        isActive={isActive}
+                        navbarBottom={navbarBottom}
+                      />
+                    </Box>
                   )}
                 </Box>
               ))}
@@ -829,7 +833,7 @@ export default function SiteHeader({
         </Container>
       </AppBar>
 
-      {/* Mobile drawer */}
+      {/* ── Mobile drawer ── */}
       <Drawer
         anchor='right'
         open={mobileOpen}
