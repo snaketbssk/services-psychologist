@@ -9,7 +9,7 @@ import TYPES from '../types/type'
 
 const container = new Container()
 
-container.bind<ILoggerService>(TYPES.LoggerService).to(LoggerService).inSingletonScope()
+container.bind<ILoggerService>(TYPES.LoggerService).to(LoggerService).inTransientScope()
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService).inSingletonScope()
 container.bind<ICoffeeService>(TYPES.CoffeeService).to(CoffeeService).inSingletonScope()
 

@@ -9,12 +9,10 @@ declare module '@mui/material/styles' {
   interface TypeBackground {
     neutral: string
   }
-
   interface SimplePaletteColorOptions {
     lighter?: string
     darker?: string
   }
-
   interface PaletteColor {
     lighter?: string
     darker?: string
@@ -23,78 +21,82 @@ declare module '@mui/material/styles' {
 
 // SETUP COLORS
 
+// Derived directly from component — warm greige neutrals
 const GREY = {
   0: '#FFFFFF',
-  100: '#F9FAFB',
-  200: '#F4F6F8',
-  300: '#DFE3E8',
-  400: '#C4CDD5',
-  500: '#919EAB',
-  600: '#637381',
-  700: '#454F5B',
-  800: '#212B36',
-  900: '#161C24'
+  100: '#FAFAF7', // warm off-white (background.default)
+  200: '#EDEAE2', // linen section bg (background.neutral)
+  300: '#D8D2C6', // divider line color
+  400: '#E0D9D0', // input border color
+  500: '#B8A898', // placeholder / disabled text
+  600: '#6B5344', // muted warm brown (text.secondary, icons)
+  700: '#8C4A28', // deep terracotta
+  800: '#2C1A0E', // dark warm brown (text.primary, headings)
+  900: '#1A0F08' // near-black espresso (dark bg default)
 }
 
+// 🍑 Primary — Healingy peach (buttons, CTAs)
 const PRIMARY = {
-  lighter: '#C8FAD6',
-  light: '#5BE49B',
-  main: '#FF9C1E',
-  dark: '#000000',
-  darker: '#004B50',
-  contrastText: '#FFFFFF'
+  lighter: '#FDF2EC', // barely-there blush
+  light: '#FAD9C0', // soft pastel peach
+  main: '#F5C5A3', // ✅ exact button fill (#f5c5a3 from component)
+  dark: '#EDB48A', // ✅ exact hover state (#edb48a from component)
+  darker: '#8C4A28', // deep terracotta for text on peach
+  contrastText: '#2C1A0E' // ✅ dark brown button label
 }
 
+// 🌿 Secondary — warm sage (complements linen)
 const SECONDARY = {
-  lighter: '#EFD6FF',
-  light: '#C684FF',
-  main: '#8E33FF',
-  dark: '#5119B7',
-  darker: '#27097A',
+  lighter: '#F2F3EE',
+  light: '#D4D9C5',
+  main: '#A8B08E', // muted sage
+  dark: '#6B7855',
+  darker: '#3A4228',
   contrastText: '#FFFFFF'
 }
 
+// 🩵 Info — muted dusty blue
 const INFO = {
-  lighter: '#CAFDF5',
-  light: '#61F3F3',
-  main: '#00B8D9',
-  dark: '#006C9C',
-  darker: '#003768',
+  lighter: '#EBF3FA',
+  light: '#B8D4EC',
+  main: '#7EB0D5',
+  dark: '#4180A8',
+  darker: '#1D4F72',
   contrastText: '#FFFFFF'
 }
 
+// 🌿 Success — exact from component submit success state
 const SUCCESS = {
-  lighter: '#D3FCD2',
-  light: '#77ED8B',
-  main: '#22C55E',
-  dark: '#118D57',
-  darker: '#065E49',
-  contrastText: '#ffffff'
+  lighter: '#EDF7F1',
+  light: '#C8EDD4',
+  main: '#A8DFBA', // ✅ exact success button bg (#a8dfba from component)
+  dark: '#3A8A57',
+  darker: '#1A5232', // ✅ exact success button text (#1a5232 from component)
+  contrastText: '#1A5232'
 }
 
+// 🌼 Warning — warm butter, stays in the brand's warm family
 const WARNING = {
-  lighter: '#FFF5CC',
-  light: '#FFD666',
-  main: '#FFAB00',
-  dark: '#B76E00',
-  darker: '#7A4100',
-  contrastText: GREY[800]
+  lighter: '#FEF9EC',
+  light: '#FAEAB4',
+  main: '#F5D57A',
+  dark: '#C9A030',
+  darker: '#7A5E0A',
+  contrastText: '#2C1A0E'
 }
 
+// 🌸 Error — dusty rose, soft not harsh
 const ERROR = {
-  lighter: '#FFE9D5',
-  light: '#FFAC82',
-  main: '#FF5630',
-  dark: '#B71D18',
-  darker: '#7A0916',
+  lighter: '#FDF0EE',
+  light: '#F5C4BB',
+  main: '#E8917F',
+  dark: '#C05040',
+  darker: '#7A2318',
   contrastText: '#FFFFFF'
 }
 
 const COMMON = {
-  common: {
-    black: '#000000',
-    white: '#FFFFFF'
-  },
+  common: { black: '#000000', white: '#FFFFFF' },
   primary: PRIMARY,
   secondary: SECONDARY,
   info: INFO,
@@ -102,13 +104,13 @@ const COMMON = {
   warning: WARNING,
   error: ERROR,
   grey: GREY,
-  divider: alpha(GREY[500], 0.2),
+  divider: '#D8D2C6', // ✅ exact divider from component
   action: {
-    hover: alpha(GREY[500], 0.08),
-    selected: alpha(GREY[500], 0.16),
-    disabled: alpha(GREY[500], 0.8),
-    disabledBackground: alpha(GREY[500], 0.24),
-    focus: alpha(GREY[500], 0.24),
+    hover: alpha('#6B5344', 0.08),
+    selected: alpha('#6B5344', 0.16),
+    disabled: alpha('#B8A898', 0.8),
+    disabledBackground: alpha('#B8A898', 0.24),
+    focus: alpha('#6B5344', 0.24),
     hoverOpacity: 0.08,
     disabledOpacity: 0.48
   }
@@ -119,18 +121,18 @@ export function palette(mode: 'light' | 'dark') {
     ...COMMON,
     mode: 'light',
     text: {
-      primary: GREY[800],
-      secondary: GREY[600],
-      disabled: GREY[500]
+      primary: '#2C1A0E', // ✅ headings, body — from component
+      secondary: '#6B5344', // ✅ subtext, icons, eyebrow — from component
+      disabled: '#B8A898' // ✅ placeholder color — from component
     },
     background: {
-      paper: '#FFFFFF',
-      default: '#FFFFFF',
-      neutral: GREY[200]
+      paper: '#FFFFFF', // ✅ card background — from component
+      default: '#FAFAF7', // warm near-white
+      neutral: '#EDEAE2' // ✅ linen section background — from component
     },
     action: {
       ...COMMON.action,
-      active: GREY[600]
+      active: '#6B5344' // ✅ active icon/element color
     }
   }
 
@@ -138,18 +140,18 @@ export function palette(mode: 'light' | 'dark') {
     ...COMMON,
     mode: 'dark',
     text: {
-      primary: '#FFFFFF',
-      secondary: GREY[500],
-      disabled: GREY[600]
+      primary: '#F5EDE6', // warm white — stays in the peach family
+      secondary: '#C4A898', // muted peach-grey
+      disabled: '#6B5344'
     },
     background: {
-      paper: GREY[800],
-      default: GREY[900],
-      neutral: alpha(GREY[500], 0.12)
+      paper: '#2C1A0E', // ✅ dark warm brown — heading color inverted as surface
+      default: '#1A0F08', // ✅ near-black espresso
+      neutral: alpha('#6B5344', 0.16)
     },
     action: {
       ...COMMON.action,
-      active: GREY[500]
+      active: '#C4A898'
     }
   }
 

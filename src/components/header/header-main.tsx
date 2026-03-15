@@ -1,31 +1,64 @@
-import MenuIcon from '@mui/icons-material/Menu'
-import { Box, Button, Container, Menu, MenuItem, Typography } from '@mui/material'
-import AppBar from '@mui/material/AppBar'
-import IconButton from '@mui/material/IconButton'
-import { styled, useTheme } from '@mui/material/styles'
-import Toolbar from '@mui/material/Toolbar'
+'use client'
+
 import React from 'react'
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundImage: `url(/header-big-builds.webp)`,
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import { styled } from '@mui/material/styles'
+
+// ─── Styled ───────────────────────────────────────────────────────────────────
+
+const StyledAppBar = styled(AppBar)({
+  backgroundImage: 'url(/header-big-builds.webp)',
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center'
-}))
+  backgroundPosition: 'center',
+})
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   alignItems: 'flex-start',
   paddingTop: theme.spacing(1),
   paddingBottom: theme.spacing(2),
-  '@media all': {},
   display: 'flex',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }))
+
+// ─── Inline menu icon (replaces @mui/icons-material/Menu) ────────────────────
+
+function MenuIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="3" y1="6"  x2="21" y2="6"  />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  )
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const pages = ['Главная', 'О психологе', 'Курсы', 'Помощь', 'Статьи', 'Видео', 'Контакты']
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 const HeaderMain = () => {
-  const theme = useTheme()
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -37,63 +70,54 @@ const HeaderMain = () => {
   }
 
   return (
-    <StyledAppBar position='static'>
-      <Container maxWidth='lg'>
+    <StyledAppBar position="static">
+      <Container maxWidth="lg">
         <StyledToolbar disableGutters>
-          {/* Mobile Menu */}
+          {/* ── Mobile menu ── */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-              size='large'
-              aria-label='open navigation menu'
-              aria-controls='menu-appbar'
-              aria-haspopup='true'
+              size="large"
+              aria-label="open navigation menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color='inherit'
+              color="inherit"
             >
               <MenuIcon />
             </IconButton>
+
             <Menu
-              id='menu-appbar'
+              id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
               keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left'
-              }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              {pages.map(page => (
+              {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign='center'>{page}</Typography>
+                  <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          {/* Desktop Buttons */}
+          {/* ── Desktop buttons ── */}
           <Box
             sx={{
               flexGrow: 1,
               display: { xs: 'none', md: 'flex' },
-              justifyContent: 'space-around', // distribute buttons evenly
-              alignItems: 'center'
+              justifyContent: 'space-around',
+              alignItems: 'center',
             }}
           >
-            {pages.map(page => (
+            {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: 'inherit',
-                  textTransform: 'none'
-                }}
+                sx={{ my: 2, color: 'inherit', textTransform: 'none' }}
               >
                 {page}
               </Button>

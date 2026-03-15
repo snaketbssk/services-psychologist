@@ -2,6 +2,7 @@ import LayoutMain from '@/components/layouts/layout-main'
 import ThemeProvider from '@/theme'
 import { createEmotionCache } from '@/utils/create-emotion-cache'
 import { EmotionCache } from '@emotion/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { NextPage } from 'next'
 import { appWithTranslation } from 'next-i18next'
 import type { AppProps } from 'next/app'
@@ -15,6 +16,7 @@ type ExtendedAppProps = AppProps & {
   emotionCache: EmotionCache
 }
 
+const queryClient = new QueryClient()
 const clientSideEmotionCache = createEmotionCache()
 
 const App = (props: ExtendedAppProps) => {
@@ -30,7 +32,11 @@ const App = (props: ExtendedAppProps) => {
   const guestGuard = Component.guestGuard ?? false
   const claims = Component.claims ?? []
 
-  return <ThemeProvider>{getLayout(<Component {...pageProps} />)}</ThemeProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>{getLayout(<Component {...pageProps} />)}</ThemeProvider>
+    </QueryClientProvider>
+  )
 }
 
 export default appWithTranslation(App)

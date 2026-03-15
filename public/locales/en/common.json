@@ -1,4 +1,13 @@
 {
+  "BOOK_CONSULTATION": {
+    "HEADER": "Book a Consultation",
+    "MAIN": "Free Consultation – Begin Your Healing Journey",
+    "DESCRIPTION": "Connect with a dedicated specialist today and take the first step towards a healthier, more fulfilling life.",
+    "NAME_INPUT": "Your Name*",
+    "EMAIL_INPUT": "Your Email*",
+    "PHONE_INPUT": "Your Phone Number*",
+    "MESSAGE_INPUT": "Your Message*"
+  },
   "HEADER": {
     "TITLE": "Психолог Александр Шахов",
     "SUBTITLE": "Кандидат психологических наук с 15-летним опытом. Практическая помощь при эмоциональных кризисах, разводе, тревоге, потере себя."

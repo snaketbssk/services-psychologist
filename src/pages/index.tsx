@@ -1,66 +1,133 @@
+import BookConsultation from '@/components/book-consultation/BookConsultation'
+import type { VideoPost } from '@/components/book-consultation/YoutubeViewer'
+import YoutubeViewer from '@/components/book-consultation/YoutubeViewer'
+
 import { useColorMode } from '@/theme'
-import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup } from '@mui/material'
+import { Box, Container } from '@mui/material'
+import https from 'https'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import BottomPopup from './bottom-popup'
-import PopupCarousel from './popup-carousel'
 
-interface IProps {}
+// ─── Server-side fetch helper (bypasses self-signed cert on localhost) ────────
 
-const HomePage = () => {
+function fetchJson<T>(url: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, { rejectUnauthorized: false }, res => {
+      let raw = ''
+      res.on('data', (chunk: string) => {
+        raw += chunk
+      })
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(raw) as T)
+        } catch (e) {
+          reject(new Error(`Failed to parse JSON from ${url}`))
+        }
+      })
+    })
+    req.on('error', reject)
+    req.end()
+  })
+}
+
+// ─── API response shape ───────────────────────────────────────────────────────
+
+interface ApiVideoItem {
+  id: string
+  day: string
+  month: string
+  category: string
+  title: string
+  videoId: string
+}
+
+interface ApiResponse {
+  videos: {
+    totalCount: number
+    values: ApiVideoItem[]
+  }
+}
+
+interface IProps {
+  videos: VideoPost[]
+  totalCount: number
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+const HomePage = ({ videos, totalCount }: IProps) => {
   const { toggleColorMode, mode } = useColorMode()
   const { t } = useTranslation()
 
   return (
     <Box>
       <Container maxWidth='lg'>
-        Hello Olya
-        <Button variant='text'>Text</Button>
-        <Button variant='contained'>Contained</Button>
-        <Button variant='outlined'>Outlined</Button>
-        <Button color='secondary'>Secondary</Button>
-        {t('BREADCRUMBS.REAL_ESTATE_PAGE')}
-        <Button variant='contained' color='success'>
-          Success
-        </Button>
-        <Button variant='outlined' color='error'>
-          Error
-        </Button>
-        <FormGroup>
-          <FormControlLabel control={<Checkbox defaultChecked />} label='Label' />
-          <FormControlLabel required control={<Checkbox />} label='Required' />
-          <FormControlLabel disabled control={<Checkbox />} label='Disabled' />
-        </FormGroup>
-        {/* <TestPage />
-        <TestPage />
-        <TestPage /> */}
-        <PopupCarousel />
-        <BottomPopup />
-        <Button onClick={toggleColorMode}>Switch to {mode === 'light' ? 'dark' : 'light'}</Button>
+        <Box sx={{ p: 2 }} />
+        {/* <BottomPopup />
+        <Box sx={{ p: 2 }} />
+        <BenefitsProfile />
+        <Box sx={{ p: 2 }} />
+        <PsychologistProfile />
+        <Box sx={{ p: 2 }} />
+        <BenefitsSection />
+        <Box sx={{ p: 2 }} />
+        <TherapyProcess />
+        <Box sx={{ p: 2 }} />
+        <CounselingServices />
+        <Box sx={{ p: 2 }} />
+        <BlogResources />
+        <Box sx={{ p: 2 }} /> */}
+
+        {/* YoutubeViewer — fed from SSR API data */}
+        <YoutubeViewer initialPosts={videos} totalCount={totalCount} />
+
+        <Box sx={{ p: 2 }} />
+        <BookConsultation />
+        {/* <Box sx={{ p: 2 }} />
+        <DocumentViewer /> */}
+        <Box sx={{ p: 2 }} />
       </Container>
     </Box>
   )
-
-  //return <Spinner />
 }
 
+// ─── SSR ──────────────────────────────────────────────────────────────────────
+
 export const getServerSideProps: GetServerSideProps<IProps> = async (context: GetServerSidePropsContext) => {
+  const i18nProps = await serverSideTranslations(context.locale ?? 'en')
+
   try {
+    const data = await fetchJson<ApiResponse>('https://localhost:7271/api/launch')
+
+    // New shape: { videos: { totalCount, values: [...] } }
+    const videos: VideoPost[] = (data.videos?.values ?? []).map(v => ({
+      id: String(v.id),
+      day: v.day,
+      month: v.month,
+      category: v.category ?? 'Shorts',
+      title: v.title,
+      videoId: v.videoId
+    }))
+
     return {
       props: {
-        ...(await serverSideTranslations(context.locale ?? 'en'))
+        ...i18nProps,
+        videos,
+        totalCount: data.videos?.totalCount ?? 0
       }
     }
-  } catch (error: any) {
+  } catch (error) {
+    console.error('[HomePage] Failed to fetch /api/launch:', error)
+
     return {
       props: {
-        ...(await serverSideTranslations(context.locale ?? 'en'))
+        ...i18nProps,
+        videos: [],
+        totalCount: 0
       }
     }
   }
 }
-
-//HomePage.getLayout = (page: ReactNode) => <LayoutMainWallpaper>{page}</LayoutMainWallpaper>
 
 export default HomePage

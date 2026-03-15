@@ -4,8 +4,8 @@ import { styled } from '@mui/material/styles'
 
 // ** Types
 import { Container } from '@mui/material'
+import SiteHeader from '../book-consultation/SiteHeader'
 import Footer from '../footer'
-import HeaderMain from '../header/header-main'
 import { BlankLayoutProps } from './types'
 
 // Styled component for Blank Layout component
@@ -32,7 +32,8 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 const LayoutMain = ({ children }: BlankLayoutProps) => {
   return (
     <BlankLayoutWrapper className='layout-wrapper'>
-      <HeaderMain />
+      <SiteHeader />
+      {/* <HeaderMain /> */}
       <Box className='app-content' sx={{ overflowX: 'hidden', position: 'relative' }}>
         <Container maxWidth='lg'>{children}</Container>
       </Box>

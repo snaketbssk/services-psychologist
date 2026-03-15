@@ -14,10 +14,10 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.14.1",
     "@iconify/react": "^6.0.1",
-    "@mui/icons-material": "^7.3.2",
     "@mui/lab": "^7.0.0-beta.17",
     "@mui/material": "^7.3.2",
     "@mui/material-nextjs": "^7.3.2",
+    "@tanstack/react-query": "^5.90.21",
     "i18next": "^25.5.2",
     "inversify": "^7.10.0",
     "next": "15.5.2",
@@ -27,7 +27,8 @@
     "react-i18next": "^15.7.3",
     "react-slick": "^0.31.0",
     "reflect-metadata": "^0.2.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "swiper": "^12.1.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
