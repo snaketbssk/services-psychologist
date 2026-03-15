@@ -1,11 +1,19 @@
+import BenefitsProfile from '@/components/book-consultation/BenefitsProfile'
+import BenefitsSection from '@/components/book-consultation/BenefitsSection'
+import BlogResources from '@/components/book-consultation/BlogResources'
 import BookConsultation from '@/components/book-consultation/BookConsultation'
+import CounselingServices from '@/components/book-consultation/CounselingServices'
+import PsychologistProfile from '@/components/book-consultation/PsychologistProfile'
+import TherapyProcess from '@/components/book-consultation/TherapyProcess'
 import type { VideoPost } from '@/components/book-consultation/YoutubeViewer'
 import YoutubeViewer from '@/components/book-consultation/YoutubeViewer'
 
+import DocumentViewer from '@/components/book-consultation/DocumentViewer'
 import { Box, Container } from '@mui/material'
 import https from 'https'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import BottomPopup from './bottom-popup'
 
 // ─── Server-side fetch helper (bypasses self-signed cert on localhost) ────────
 
@@ -59,7 +67,7 @@ const HomePage = ({ videos, totalCount }: IProps) => {
     <Box>
       <Container maxWidth='lg'>
         <Box sx={{ p: 2 }} />
-        {/* <BottomPopup />
+        <BottomPopup />
         <Box sx={{ p: 2 }} />
         <BenefitsProfile />
         <Box sx={{ p: 2 }} />
@@ -72,15 +80,15 @@ const HomePage = ({ videos, totalCount }: IProps) => {
         <CounselingServices />
         <Box sx={{ p: 2 }} />
         <BlogResources />
-        <Box sx={{ p: 2 }} /> */}
+        <Box sx={{ p: 2 }} />
 
         {/* YoutubeViewer — fed from SSR API data */}
         <YoutubeViewer initialPosts={videos} totalCount={totalCount} />
 
         <Box sx={{ p: 2 }} />
         <BookConsultation />
-        {/* <Box sx={{ p: 2 }} />
-        <DocumentViewer /> */}
+        <Box sx={{ p: 2 }} />
+        <DocumentViewer />
         <Box sx={{ p: 2 }} />
       </Container>
     </Box>
@@ -93,7 +101,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (context: Ge
   const i18nProps = await serverSideTranslations(context.locale ?? 'en')
 
   try {
-    const data = await fetchJson<ApiResponse>('https://localhost:7271/api/launch')
+    const data = await fetchJson<ApiResponse>('https://snaketbs.com/api/psychologist/launch')
 
     // New shape: { videos: { totalCount, values: [...] } }
     const videos: VideoPost[] = (data.videos?.values ?? []).map(v => ({

@@ -8,7 +8,7 @@
 // .env.production:
 //   NEXT_PUBLIC_API_URL=https://api.yourdomain.com
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://localhost:7271'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://snaketbs.com/api/psychologist'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
