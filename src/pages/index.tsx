@@ -101,7 +101,7 @@ export const getServerSideProps: GetServerSideProps<IProps> = async (context: Ge
   const i18nProps = await serverSideTranslations(context.locale ?? 'en')
 
   try {
-    const data = await fetchJson<ApiResponse>('https://snaketbs.com/api/psychologist/launch')
+    const data = await fetchJson<ApiResponse>('https://snaketbs.com/psychologist/api/launch')
 
     // New shape: { videos: { totalCount, values: [...] } }
     const videos: VideoPost[] = (data.videos?.values ?? []).map(v => ({
