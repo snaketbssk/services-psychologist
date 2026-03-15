@@ -9,7 +9,7 @@ import Footer from '../footer'
 import { BlankLayoutProps } from './types'
 
 // Styled component for Blank Layout component
-const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
+const BlankLayoutWrapper = styled(Box)<BoxProps>(({}) => ({
   //height: '80vh',
 
   // For V1 Blank layout pages

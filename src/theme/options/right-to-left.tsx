@@ -21,9 +21,6 @@ export default function RTL({ children, themeDirection }: Props) {
   const cacheRtl = createCache({
     key: 'rtl',
     prepend: true
-    // @ts-ignore
-    // https://github.com/styled-components/stylis-plugin-rtl/issues/35
-    //stylisPlugins: [prefixer, rtlPlugin],
   })
 
   if (themeDirection === 'rtl') {

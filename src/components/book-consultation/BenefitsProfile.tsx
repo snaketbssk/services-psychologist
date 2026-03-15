@@ -12,7 +12,7 @@ import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -173,7 +173,6 @@ export default function BenefitsProfile({
   image = 'https://healingynextjs.vercel.app/images/section/section-benefit.jpg',
   imageAlt = 'Therapist in session'
 }: BenefitsProfileProps) {
-  const theme = useTheme()
   const [expanded, setExpanded] = useState<string | false>(false)
 
   const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {

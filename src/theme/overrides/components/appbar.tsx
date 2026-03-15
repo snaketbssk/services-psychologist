@@ -1,19 +1,17 @@
-import { Theme } from '@mui/material/styles';
-
 // ----------------------------------------------------------------------
 
-export default function AppBar(theme: Theme) {
+export default function AppBar() {
   return {
     MuiAppBar: {
       defaultProps: {
-        color: 'transparent',
+        color: 'transparent'
       },
 
       styleOverrides: {
         root: {
-          boxShadow: 'none',
-        },
-      },
-    },
-  };
+          boxShadow: 'none'
+        }
+      }
+    }
+  }
 }

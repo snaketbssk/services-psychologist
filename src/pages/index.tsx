@@ -2,11 +2,9 @@ import BookConsultation from '@/components/book-consultation/BookConsultation'
 import type { VideoPost } from '@/components/book-consultation/YoutubeViewer'
 import YoutubeViewer from '@/components/book-consultation/YoutubeViewer'
 
-import { useColorMode } from '@/theme'
 import { Box, Container } from '@mui/material'
 import https from 'https'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 // ─── Server-side fetch helper (bypasses self-signed cert on localhost) ────────
@@ -21,7 +19,7 @@ function fetchJson<T>(url: string): Promise<T> {
       res.on('end', () => {
         try {
           resolve(JSON.parse(raw) as T)
-        } catch (e) {
+        } catch {
           reject(new Error(`Failed to parse JSON from ${url}`))
         }
       })
@@ -57,9 +55,6 @@ interface IProps {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const HomePage = ({ videos, totalCount }: IProps) => {
-  const { toggleColorMode, mode } = useColorMode()
-  const { t } = useTranslation()
-
   return (
     <Box>
       <Container maxWidth='lg'>

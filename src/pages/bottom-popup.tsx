@@ -4,7 +4,7 @@ import React from 'react'
 
 // Slide from bottom to center
 const BottomToCenterTransition = React.forwardRef(function Transition(
-  props: TransitionProps & { children: React.ReactElement<any, any> },
+  props: TransitionProps & { children: React.ReactElement },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction='up' ref={ref} {...props} timeout={{ appear: 500, enter: 500, exit: 300 }} />

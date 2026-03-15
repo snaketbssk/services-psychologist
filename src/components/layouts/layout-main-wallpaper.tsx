@@ -1,11 +1,10 @@
 // ** MUI Imports
-import { styled } from '@mui/material/styles'
 import Box, { BoxProps } from '@mui/material/Box'
+import { styled } from '@mui/material/styles'
 
 // ** Types
-import { BlankLayoutProps } from './types'
-import HeaderMain from '../header/header-main'
 import Footer from '../footer'
+import { BlankLayoutProps } from './types'
 
 // Styled component for Blank Layout component
 const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -32,7 +31,6 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 const LayoutMainWallpaper = ({ children }: BlankLayoutProps) => {
   return (
     <BlankLayoutWrapper className='layout-wrapper'>
-      <HeaderMain />
       <Box className='app-content' sx={{ overflowX: 'hidden', position: 'relative' }}>
         {children}
       </Box>

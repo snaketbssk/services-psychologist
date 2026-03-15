@@ -1,13 +1,11 @@
-import { Theme } from '@mui/material/styles';
-
 // ----------------------------------------------------------------------
 
-export default function Stack(theme: Theme) {
+export default function Stack() {
   return {
     MuiStack: {
       defaultProps: {
-        useFlexGap: true,
-      },
-    },
-  };
+        useFlexGap: true
+      }
+    }
+  }
 }

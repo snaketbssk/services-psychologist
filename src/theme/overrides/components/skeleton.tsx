@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles'
 
 // ----------------------------------------------------------------------
 
@@ -7,16 +7,16 @@ export default function Skeleton(theme: Theme) {
     MuiSkeleton: {
       defaultProps: {
         animation: 'wave',
-        variant: 'rounded',
+        variant: 'rounded'
       },
       styleOverrides: {
         root: {
-          backgroundColor: theme.palette.background.neutral,
+          backgroundColor: theme.palette.background.neutral
         },
         rounded: {
-          borderRadius: theme.shape.borderRadius * 2,
-        },
-      },
-    },
-  };
+          borderRadius: Number(theme.shape.borderRadius) * 2
+        }
+      }
+    }
+  }
 }

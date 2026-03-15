@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -125,8 +125,6 @@ export default function CounselingServices({
   ctaHref = '/our-service',
   services = DEFAULT_SERVICES
 }: CounselingServicesProps) {
-  const theme = useTheme()
-
   return (
     <Box
       component='section'

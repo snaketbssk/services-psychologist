@@ -1,6 +1,5 @@
 import LayoutMain from '@/components/layouts/layout-main'
 import ThemeProvider from '@/theme'
-import { createEmotionCache } from '@/utils/create-emotion-cache'
 import { EmotionCache } from '@emotion/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { NextPage } from 'next'
@@ -17,20 +16,12 @@ type ExtendedAppProps = AppProps & {
 }
 
 const queryClient = new QueryClient()
-const clientSideEmotionCache = createEmotionCache()
 
 const App = (props: ExtendedAppProps) => {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const { Component, pageProps } = props
 
   // Variables
-  const contentHeightFixed = Component.contentHeightFixed ?? false
   const getLayout = Component.getLayout ?? (page => <LayoutMain>{page}</LayoutMain>)
-
-  const setConfig = Component.setConfig ?? undefined
-
-  const authGuard = Component.authGuard ?? false
-  const guestGuard = Component.guestGuard ?? false
-  const claims = Component.claims ?? []
 
   return (
     <QueryClientProvider client={queryClient}>

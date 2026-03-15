@@ -1,9 +1,9 @@
 // @mui
-import { alpha, Theme } from '@mui/material/styles'
-import { dividerClasses } from '@mui/material/Divider'
-import { checkboxClasses } from '@mui/material/Checkbox'
-import { menuItemClasses } from '@mui/material/MenuItem'
 import { autocompleteClasses } from '@mui/material/Autocomplete'
+import { checkboxClasses } from '@mui/material/Checkbox'
+import { dividerClasses } from '@mui/material/Divider'
+import { menuItemClasses } from '@mui/material/MenuItem'
+import { alpha, Theme } from '@mui/material/styles'
 
 // ----------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ export const paper = ({ theme, bgcolor, dropdown }: { theme: Theme; bgcolor?: st
   ...(dropdown && {
     padding: theme.spacing(0.5),
     boxShadow: theme.customShadows.dropdown,
-    borderRadius: theme.shape.borderRadius * 1.25
+    borderRadius: Number(theme.shape.borderRadius) * 1.25
   })
 })
 
@@ -31,7 +31,7 @@ export const paper = ({ theme, bgcolor, dropdown }: { theme: Theme; bgcolor?: st
 export const menuItem = (theme: Theme) => ({
   ...theme.typography.body2,
   padding: theme.spacing(0.75, 1),
-  borderRadius: theme.shape.borderRadius * 0.75,
+  borderRadius: Number(theme.shape.borderRadius) * 0.75,
   '&:not(:last-of-type)': {
     marginBottom: 4
   },
