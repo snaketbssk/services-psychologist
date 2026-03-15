@@ -4,99 +4,111 @@ properties([disableConcurrentBuilds()])
 
 pipeline {
     agent any
-		environment {
-			DOCKER_DOCKERFILE = './Dockerfile'
-			DOCKER_IMAGE = 'propokot/services-psychologist-client'
-			DOCKER_CREDENTIAL = 'docker-hub-credentials'
-			SERVICE_NAME = 'services-psychologist-client'
-            DOCKER_BRANCH = "${env.BRANCH_NAME}"
-		}
+
+    environment {
+        DOCKER_DOCKERFILE = './Dockerfile'
+        DOCKER_IMAGE = 'propokot/services-psychologist-client'
+        DOCKER_CREDENTIAL = 'docker-hub-credentials'
+        SERVICE_NAME = 'services-psychologist-client'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+
         stage('Docker System Prune') {
             steps {
-                sh """
-                docker system prune -a -f
-                """
+                sh '''
+                docker system prune -af
+                '''
             }
         }
-		    stage('Building image') {
+
+        stage('Build image') {
             steps {
-				        sh """
-				        docker build -f "${DOCKER_DOCKERFILE}" --force-rm -t "${DOCKER_IMAGE}:${DOCKER_BRANCH}" "./"
-				        """
+                sh '''
+                docker build -f "$DOCKER_DOCKERFILE" --force-rm -t "$DOCKER_IMAGE:latest" .
+                '''
             }
         }
-		    stage('Docker login') {
-			      steps {
-				        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIAL}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					          sh """
-					          docker login -u $USERNAME -p $PASSWORD
-					          """
-				    }
-			    }
-		    }
-		    stage('Deploy image') {
+
+        stage('Docker login') {
             steps {
-				        sh """
-				        docker push ${DOCKER_IMAGE}:latest
-				        """
-                }
-            }
-		    stage('Apply K8s') {
-            steps {
-				            withCredentials([string(credentialsId: 'kubernetes_username', variable: 'KUBERNETES_USERNAME'), string(credentialsId: 'kubernetes_password', variable: 'KUBERNETES_PASSWORD'), string(credentialsId: 'kubernetes_url', variable: 'KUBERNETES_URL')]) {
-                        sh ("""
-                        curl -u ${KUBERNETES_USERNAME}:${KUBERNETES_PASSWORD} ${KUBERNETES_URL}/execute-commands/${SERVICE_NAME}
-                        """)
-				            }
+                withCredentials([usernamePassword(
+                    credentialsId: DOCKER_CREDENTIAL,
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh '''
+                    echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                    '''
                 }
             }
         }
+
+        stage('Push image') {
+            steps {
+                sh '''
+                docker push $DOCKER_IMAGE:latest
+                '''
+            }
+        }
+
+        stage('Apply K8s') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'kubernetes_username', variable: 'KUBERNETES_USERNAME'),
+                    string(credentialsId: 'kubernetes_password', variable: 'KUBERNETES_PASSWORD'),
+                    string(credentialsId: 'kubernetes_url', variable: 'KUBERNETES_URL')
+                ]) {
+                    sh '''
+                    curl -u $KUBERNETES_USERNAME:$KUBERNETES_PASSWORD \
+                    $KUBERNETES_URL/execute-commands/$SERVICE_NAME
+                    '''
+                }
+            }
+        }
+    }
 
     post {
-
         success {
             script {
-                sendTelegram("OK", "YES")
+                sendTelegram('OK', 'YES')
             }
         }
 
         aborted {
             script {
-                sendTelegram("Aborted", "Aborted")
+                sendTelegram('Aborted', 'Aborted')
             }
         }
 
         failure {
             script {
-                sendTelegram("not OK", "no")
+                sendTelegram('not OK', 'no')
             }
         }
     }
 }
 
 def sendTelegram(buildStatus, publishStatus) {
-
     withCredentials([
         string(credentialsId: 'telegram_token', variable: 'TOKEN'),
         string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')
     ]) {
+        sh """
+        MESSAGE="*\$JOB_NAME* : POC
+Branch: \$GIT_BRANCH
+Build: ${buildStatus}
+Published: ${publishStatus}"
 
-        sh '''
-        MESSAGE="*$JOB_NAME* : POC
-Branch: $GIT_BRANCH
-Build: ''' + buildStatus + '''
-Published: ''' + publishStatus + '''"
-
-        curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
-            --data-urlencode "chat_id=$CHAT_ID" \
+        curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" \
+            --data-urlencode "chat_id=\$CHAT_ID" \
             --data-urlencode "parse_mode=Markdown" \
-            --data-urlencode "text=$MESSAGE"
-        '''
+            --data-urlencode "text=\$MESSAGE"
+        """
     }
 }
